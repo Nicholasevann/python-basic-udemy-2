@@ -51,6 +51,7 @@ def authenticate_user(db: Session, username: str, password: str):
         return False
     if not bcrypt_context.verify(password, user.hashed_password):
         return False
+    print(user)
     return user
 
 def create_access_token(data: dict):
@@ -64,9 +65,10 @@ async def get_current_user(token: Annotated[HTTPAuthorizationCredentials, Depend
         payload = jwt.decode(token.credentials, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         user_id: int = payload.get("id")
+        user_role: str = payload.get("role")
         if username is None or user_id is None:
             raise HTTPException(status_code=401, detail="Unauthorized")
-        return {"username": username, "id": user_id}
+        return {"username": username, "id": user_id,'user_role':user_role}
     except JWTError:
         raise HTTPException(status_code=401, detail="Unauthorized")
 @router.post("/token", status_code=200)
@@ -78,6 +80,6 @@ async def login_for_access_token(form_data:Annotated[OAuth2PasswordRequestForm, 
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         ) 
-    token = create_access_token(data={"sub": user.username, "id": user.id})
+    token = create_access_token(data={"sub": user.username, "id": user.id,"role":user.role})
     return {"access_token": token, "token_type": "bearer"}
 

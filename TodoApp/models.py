@@ -15,7 +15,7 @@ class User(Base):
     role = Column(String, default="user")
 
     def __repr__(self):
-        return f"<User id={self.id} username={self.username}>"
+        return f"<User id={self.id} username={self.username}, role={self.role}>"
 class Todos(Base):
     __tablename__ = 'todos'
 
