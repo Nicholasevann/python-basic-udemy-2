@@ -5,7 +5,7 @@ from models import User
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter
-from database import SessionLocal
+from TodoApp.databasesqlite import SessionLocal
 from fastapi.security import OAuth2PasswordRequestForm, HTTPBearer,HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 router = APIRouter(

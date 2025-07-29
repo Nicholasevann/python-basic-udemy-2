@@ -1,13 +1,10 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-SQLALCHEMY_DATABASE_URI = 'sqlite:///./todosapp.db'
+from sqlalchemy.orm import sessionmaker
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URI,
-    connect_args={"check_same_thread": False}  # Required for SQLite
-    )
+# Use Docker DB connection string
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/todoapp"
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 Base = declarative_base()

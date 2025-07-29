@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, APIRouter
 from models import Todos
-from database import SessionLocal, engine
+from TodoApp.databasesqlite import SessionLocal, engine
 from .auth import get_current_user
 
 router = APIRouter()
