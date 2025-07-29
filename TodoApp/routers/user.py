@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, APIRouter
 from models import Todos,User
-from TodoApp.databasesqlite import SessionLocal, engine
+from database import get_db
 from .auth import get_current_user
 from passlib.context import CryptContext
 router = APIRouter(
@@ -13,12 +13,6 @@ router = APIRouter(
     tags=['user']
 )
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 db_dependency = Annotated[Session, Depends(get_db)]
 user_depedency = Annotated[dict,Depends(get_current_user)]
@@ -48,4 +42,18 @@ async def update_password(user:user_depedency, user_verification: UserVerificati
     user_model.hashed_password = bcrypt_context.hash(user_verification.mew_password)
     db.add(user_model)
     db.commit()
+
+@router.put("/phone-number/{phone_number}", status_code=200)
+async def update_phone_number(user:user_depedency, phone_number: str, db:db_dependency):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authenticated Failed")
+    user_model = db.query(User).filter(User.id == user.get('id')).first()
+    
+    if not user_model:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user_model.phone_number = phone_number
+    db.add(user_model)
+    db.commit()
+    return {"message": "Phone number updated successfully"}
     

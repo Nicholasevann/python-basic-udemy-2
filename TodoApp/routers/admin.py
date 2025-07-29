@@ -5,18 +5,10 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, APIRouter, Path
 from models import Todos,User
-from TodoApp.databasesqlite import SessionLocal, engine
+from database import get_db
 from .auth import get_current_user
 
 router = APIRouter()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 db_dependency = Annotated[Session, Depends(get_db)]
 user_depedency = Annotated[dict,Depends(get_current_user)]
 

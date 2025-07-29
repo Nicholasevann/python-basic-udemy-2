@@ -1,15 +1,23 @@
 services:
-  db:
-    image: postgres:15
-    container_name: todo-db
+  postgres:
+    image: postgres
+    container_name: todos-app-postgres
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: todoapp
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: todos-app
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - data_postgres:/var/lib/postgresql/data
+  redis:
+    image: redis
+    container_name: todos-app-redis
+    ports:
+      - "63798:6379"
+    volumes:
+      - data_redis:/data
 
 volumes:
-  pgdata:
+  data_postgres:
+  data_redis:

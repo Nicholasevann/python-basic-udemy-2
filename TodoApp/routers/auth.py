@@ -5,7 +5,7 @@ from models import User
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter
-from TodoApp.databasesqlite import SessionLocal
+from database import get_db
 from fastapi.security import OAuth2PasswordRequestForm, HTTPBearer,HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 router = APIRouter(
@@ -21,13 +21,7 @@ class CreateUserRequest(BaseModel):
     last_name: str
     password:str
     role:str
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    phone_number: str | None = None
 
 db_dependency = Annotated[Session, Depends(get_db)]
 @router.post("/auth/", status_code=201)
@@ -39,7 +33,8 @@ async def create_user(db:db_dependency,create_user_request: CreateUserRequest):
         last_name=create_user_request.last_name,
         role=create_user_request.role,
         hashed_password=bcrypt_context.hash(create_user_request.password),
-        is_active=True
+        is_active=True,
+        phone_number=create_user_request.phone_number
     )
     db.add(create_user_model)
     db.commit()

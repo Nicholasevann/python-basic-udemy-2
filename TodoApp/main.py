@@ -1,7 +1,6 @@
-
-from fastapi import  FastAPI
+from fastapi import FastAPI
 import models 
-from TodoApp.databasesqlite import  engine
+from database import engine  # Changed from TodoApp.databasesqlite
 from routers import auth, todos, admin, user
 
 app = FastAPI()
